@@ -1,9 +1,9 @@
 from flask import Flask, request, redirect, render_template
-import cgi
 
 app = Flask(__name__)
 
 app.config['DEBUG'] = True      # displays runtime errors in the browser, too
+
 
 @app.route("/")
 def index():
@@ -12,12 +12,12 @@ def index():
     encoded_error3= request.args.get("error3")
     encoded_error4= request.args.get("error4")
     name = request.args.get("name")
+    name = "" if name is None else name
     email = request.args.get("email")
+    email = "" if email is None else email
     return render_template('signup.html', name=name, email=email,
-        error1=encoded_error1 and cgi.escape(encoded_error1, quote=True), 
-        error2=encoded_error2 and cgi.escape(encoded_error2, quote=True), 
-        error3=encoded_error3 and cgi.escape(encoded_error3, quote=True), 
-        error4=encoded_error4 and cgi.escape(encoded_error4, quote=True))
+        error1=encoded_error1, error2=encoded_error2, 
+        error3=encoded_error3, error4=encoded_error4)
 
 @app.route("/welcome", methods=['POST'])
 def sign_up():
@@ -29,6 +29,7 @@ def sign_up():
     #verify user name
     if (not user_name) or (user_name.strip() == "") or (user_name == "None"):
         error1 = "No username submitted"
+        user_name = ""
         return redirect("/?error1=" + error1 + "&email="+email)
 
     if len(user_name) > 20 or len(user_name) < 3:
@@ -57,6 +58,7 @@ def sign_up():
         return redirect("/?error3=" + error3 + "&name="+user_name + "&email="+email)
     
     #validate email
+    # for future use regex expression '/[^@]+@[^\.]+\..+/g'
     if email != '':
         if len(email) > 20 or len(email) < 3:
             error4 = "email must be between 3 and 20 characters"
