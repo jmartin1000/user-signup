@@ -66,7 +66,8 @@ def sign_up():
 
         criteria1 = email.count("@")
         criteria2 = email.count(".")
-        if criteria1 != 1 or criteria2 != 1:
+        criteria3 = email.count(" ")
+        if criteria1 != 1 or criteria2 != 1 or criteria3 != 0:
             error4 = "this email does not appear to be valid"
             return redirect("/?error4=" + error4 + "&name="+user_name + "&email="+email)
                            
